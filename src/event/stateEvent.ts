@@ -121,6 +121,10 @@ export class StateEvent extends Event {
   sourceNamesUpdated(names: CommonState['sourceNames']) {
     this.emit('sourceNamesUpdated', names)
   }
+
+  downloadListUpdated(list: LX.Download.ListItem[]) {
+    this.emit('downloadListUpdated', list)
+  }
 }
 
 

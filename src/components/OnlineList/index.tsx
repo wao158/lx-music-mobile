@@ -1,4 +1,4 @@
-import { useRef, forwardRef, useImperativeHandle } from 'react'
+import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
 import { View } from 'react-native'
 // import LoadingMask, { LoadingMaskType } from '@/components/common/LoadingMask'
 import List, { type ListProps, type ListType, type Status, type RowInfoType } from './List'
@@ -6,7 +6,8 @@ import ListMenu, { type ListMenuType, type Position, type SelectInfo } from './L
 import ListMusicMultiAdd, { type MusicMultiAddModalType as ListAddMultiType } from '@/components/MusicMultiAddModal'
 import ListMusicAdd, { type MusicAddModalType as ListMusicAddType } from '@/components/MusicAddModal'
 import MultipleModeBar, { type MultipleModeBarType, type SelectMode } from './MultipleModeBar'
-import { clearMusicUrl, handleDislikeMusic, handlePlay, handlePlayLater, handleShare, handleShowMusicSourceDetail } from './listAction'
+import { clearMusicUrl, handleDislikeMusic, handleDownload, handlePlay, handlePlayLater, handleShare, handleShowMusicSourceDetail } from './listAction'
+import DownloadQualitySelector, { type DownloadQualitySelectorType, setDownloadQualitySelector } from './DownloadQualitySelector'
 import { createStyle } from '@/utils/tools'
 
 export interface OnlineListProps {
@@ -37,7 +38,13 @@ export default forwardRef<OnlineListType, OnlineListProps>(({
   const listMusicAddRef = useRef<ListMusicAddType>(null)
   const listMusicMultiAddRef = useRef<ListAddMultiType>(null)
   const listMenuRef = useRef<ListMenuType>(null)
+  const downloadQualitySelectorRef = useRef<DownloadQualitySelectorType>(null)
   // const loadingMaskRef = useRef<LoadingMaskType>(null)
+
+  useEffect(() => {
+    setDownloadQualitySelector(downloadQualitySelectorRef.current)
+    return () => setDownloadQualitySelector(null)
+  }, [])
 
   useImperativeHandle(ref, () => ({
     setList(list, isAppend = false, showSource = false) {
@@ -107,12 +114,14 @@ export default forwardRef<OnlineListType, OnlineListProps>(({
         ref={listMenuRef}
         onPlay={info => { handlePlay(info.musicInfo) }}
         onPlayLater={info => { hancelExitSelect(); handlePlayLater(info.musicInfo, info.selectedList, hancelExitSelect) }}
+        onDownload={info => { hancelExitSelect(); void handleDownload(info.musicInfo) }}
         onCopyName={info => { handleShare(info.musicInfo) }}
         onAdd={handleAddMusic}
         onMusicSourceDetail={info => { void handleShowMusicSourceDetail(info.musicInfo) }}
         onRemoveCache={info => { void clearMusicUrl(info.musicInfo) }}
         onDislikeMusic={info => { void handleDislikeMusic(info.musicInfo) }}
       />
+      <DownloadQualitySelector ref={downloadQualitySelectorRef} />
       {/* <LoadingMask ref={loadingMaskRef} /> */}
     </View>
   )

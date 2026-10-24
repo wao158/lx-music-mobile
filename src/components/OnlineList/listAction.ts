@@ -10,6 +10,8 @@ import playerState from '@/store/player/state'
 import musicSdk from '@/utils/musicSdk'
 import { toOldMusicInfo } from '@/utils'
 import { clearMusicUrlByMusic } from '@/utils/data'
+import { addDownloadTask } from '@/core/download'
+import { showDownloadQualitySelector } from './DownloadQualitySelector'
 
 export const handlePlay = (musicInfo: LX.Music.MusicInfoOnline) => {
   void addListMusics(LIST_IDS.DEFAULT, [musicInfo], settingState.setting['list.addMusicLocationType']).then(() => {
@@ -36,6 +38,12 @@ export const handleShowMusicSourceDetail = async(minfo: LX.Music.MusicInfoOnline
   const url = musicSdk[minfo.source as LX.OnlineSource]?.getMusicDetailPageUrl(toOldMusicInfo(minfo))
   if (!url) return
   void openUrl(url)
+}
+
+export const handleDownload = async(musicInfo: LX.Music.MusicInfoOnline) => {
+  const quality = await showDownloadQualitySelector(musicInfo)
+  if (!quality) return
+  void addDownloadTask(musicInfo, quality)
 }
 
 export const clearMusicUrl = async(musicInfo: LX.Music.MusicInfoOnline) => {
