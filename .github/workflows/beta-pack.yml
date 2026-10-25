@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate file MD5
         run: |
-          cd android/app/build/outputs/apk/debug
+          cd android/app/build/outputs/apk/release
           md5sum *.apk
 
       - name: Upload Artifact

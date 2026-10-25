@@ -7,8 +7,8 @@ runs:
     - name: Upload Artifact universal
       uses: actions/upload-artifact@v4
       with:
-        name: app-v${{ env.PACKAGE_VERSION }}-universal-debug
-        path: android/app/build/outputs/apk/debug/*universal*.apk
+        name: app-v${{ env.PACKAGE_VERSION }}-universal-release
+        path: android/app/build/outputs/apk/release/*universal*.apk
         if-no-files-found: warn
 
     - name: Upload Artifact split apks
